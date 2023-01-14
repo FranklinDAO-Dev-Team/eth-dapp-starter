@@ -132,7 +132,7 @@ export default function Home() {
             await Donate.connect(provider.getSigner()).withdrawBalance(withdrawAddress, ethers.utils.parseUnits(withdrawAmount, "ether"));
             setUpdatedWithdraw(withdrawAmount);
         } catch (error) {
-            var popup = alert("Error: caused by either invalid input, insufficient balance, or wrong network!");
+            var popup = alert("Error: only the owner of this contract can withdraw funds!");
         }
     };
 
