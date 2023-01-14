@@ -43,40 +43,40 @@ export default function Home() {
     }
 
     // getting whether user is authenticated
-    const [authenticated, setAuthenticated] = useState(false);
+    const [authenticated, setAuthenticated] = useState(true);
 
     // checking for authentication
     async function requestAccount() {
         console.log('Requesting account...');
-    
+
         //Check if MetaMask is installed
         if (window.ethereum) {
-          console.log('detected metamask');
-    
-          try {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            console.log(accounts);
-            
-    
-            setWalletAddress(accounts[0]);
-            getBalance();
-    
-            if (accounts.length > 0) {
-              setAuthenticated(true);
-            } else {
-              setAuthenticated(false);
+            console.log('detected metamask');
+
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                console.log(accounts);
+
+
+                setWalletAddress(accounts[0]);
+                getBalance();
+
+                if (accounts.length > 0) {
+                    setAuthenticated(true);
+                } else {
+                    setAuthenticated(false);
+                }
+
+                console.log('auth detected', authenticated)
+
+            } catch (error) {
+                console.error(error);
             }
 
-            console.log('auth detected', authenticated)
-    
-          } catch (error) {
-            console.error(error);
-          }
-    
         } else {
-          console.log('no metamask detected');
+            console.log('no metamask detected');
         }
-      }
+    }
 
 
 
@@ -84,25 +84,36 @@ export default function Home() {
     const [contractBalance, setContractBalance] = useState();
 
     const getContractBalance = async () => {
-        const bigNumberContractBalance = await Donate.getContractBalance.call();
-        const contractBalance = ethers.utils.formatEther(bigNumberContractBalance);
-        setContractBalance(parseInt(contractBalance));
+        const weiContractBalance = await Donate.getContractBalance.call();
+        const contractBalance = ethers.utils.formatEther(weiContractBalance, { commify: true });
+        setContractBalance(contractBalance);
     };
 
-    // handle submit form 
-    const handleSubmitForm = async (event) => {
-        event.preventDefault();
-        //***modify below to call ur smart contract */
-        console.log(event.target[0].value)
-        console.log(event.target[1].value)
-        console.log(event.target[2].value)
-        ////////
-        setUser("");
-        setDescription("");
-        setNoteURI("");
-        setButtonState(false);
+    // handle donate button
+    const [donateAmount, setDonateAmount] = useState('');
+    const [updated, setUpdated] = useState(donateAmount);
 
-    }
+    const handleChange = (event) => {
+        setDonateAmount(event.target.value);
+    };
+
+    const handleClick = async () => {
+        await Donate.connect(provider.getSigner()).donate({ value: ethers.utils.parseUnits(donateAmount, "ether") });
+        setUpdated(donateAmount);
+    };
+
+    // handle withdraw button
+    const [withdrawAmount, setWithdrawAmount] = useState('');
+    const [updatedWithdraw, setUpdatedWithdraw] = useState(withdrawAmount);
+
+    const handleChangeWithdraw = (event) => {
+        setWithdrawAmount(event.target.value);
+    };
+
+    const handleClickWithdraw = async () => {
+        await Donate.connect(provider.getSigner()).withdrawBalance('0x85257F5401071fB3EF665299d63A1e42a41b3769', ethers.utils.parseUnits(withdrawAmount, "ether"));
+        setUpdatedWithdraw(withdrawAmount);
+    };
 
 
     // rendering the page
@@ -118,23 +129,56 @@ export default function Home() {
 
                 <div className="m-6">
 
-                <h2 className="flex mb-4 text-sm font-medium text-yellow-500">
+                    <h2 className="flex mb-4 text-sm font-medium text-yellow-500">
                         For below buttons to work, switch to Goerli Testnet on Metamask
                     </h2>
-                    
+
                     <h2 className="flex mb-4 text-sm font-medium text-white">
-                        Contract: 0x2D53197C8Dfb493b64111BcA29286f613912a7BB (<a className="text-blue-600 underline hover:text-blue-700" href="https://goerli.etherscan.io/address/0x2D53197C8Dfb493b64111BcA29286f613912a7BB#code">See Goerli Etherscan</a>)
+                        Contract: <a className="ml-2 text-blue-600 underline hover:text-blue-700" href="https://goerli.etherscan.io/address/0x2D53197C8Dfb493b64111BcA29286f613912a7BB#code">0x2D53197C8Dfb493b64111BcA29286f613912a7BB</a>
                     </h2>
 
+
+
+                    {/* contract balanace button */}
                     <a className="mr-4 p-2 text-sm font-medium text-white bg-zinc-600 hover:bg-zinc-700 rounded-md shadow">
-                        <button onClick={() => getContractBalance()}>Show Contract Balance</button>
-                        
+                        <button onClick={() => getContractBalance()}>Balance</button>
+
                     </a>
-                    <a className="text-m text-white font-bold">
+                    <a className="text-m text-white font-bold mr-4">
                         {contractBalance}
                     </a>
 
 
+                    {/* donate input */}
+                    <a className="mr-4 p-2 text-sm font-medium text-white bg-zinc-600 hover:bg-zinc-700 rounded-md shadow">
+                        <button onClick={handleClick}>Donate</button>
+
+                    </a>
+
+
+                    <input className="mr-4"
+                        type="number" min="0"
+                        id="donate-button"
+                        name="donate-button"
+                        onChange={handleChange}
+                        value={donateAmount}
+                    />
+
+
+                    {/* withdraw input */}
+                    <a className="mr-4 p-2 text-sm font-medium text-white bg-zinc-600 hover:bg-zinc-700 rounded-md shadow">
+                        <button onClick={handleClickWithdraw}>Withdraw</button>
+
+                    </a>
+
+
+                    <input
+                        type="number" min="0"
+                        id="withdraw-button"
+                        name="withdraw-button"
+                        onChange={handleChangeWithdraw}
+                        value={withdrawAmount}
+                    />
 
                 </div>
             </div>
