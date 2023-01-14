@@ -29,9 +29,6 @@ const Donate = new ethers.Contract(
 );
 
 
-// test
-
-
 export default function Home() {
     // Connecting Wallet
     const [accounts, setAccounts] = useState([]);
@@ -59,7 +56,7 @@ export default function Home() {
           try {
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             console.log(accounts);
-            console.log('auth detected', authenticated)
+            
     
             setWalletAddress(accounts[0]);
             getBalance();
@@ -69,6 +66,8 @@ export default function Home() {
             } else {
               setAuthenticated(false);
             }
+
+            console.log('auth detected', authenticated)
     
           } catch (error) {
             console.error(error);
