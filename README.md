@@ -19,7 +19,7 @@ Full documentation and video tutorial TBA, but hopefully the comments in the cod
 ---
 
 
-## To deploy on your own machine:
+## How to Deploy on your own Machine
 
 1. Open visual studio code and select clone github repo and paste in the link from this repository
 2. In a terminal, run 
