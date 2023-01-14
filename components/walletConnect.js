@@ -18,7 +18,7 @@ export function WalletConnect() {
     setBalance(ethers.utils.formatEther(balance));
   };
 
-  // talking with metamask to get wallet connections
+  // talking with metamask to get the accounts with wallet connections
   async function requestAccount() {
     console.log('Requesting account...');
 
@@ -63,7 +63,7 @@ export function WalletConnect() {
   }
 
 
-  // Top Navigation Element
+  // Top Navigation Bar Element
   return (
     <header className="py-1 backdrop-brightness-100">
       <div className="mx-auto max-w-screen-xl">

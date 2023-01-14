@@ -1,9 +1,5 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import Link from 'next/link'
-import { ethers, BigNumber } from "ethers";
-import { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import { useState } from "react";
 import { ContractABI } from '../components/contractABI.js';
 
 
@@ -30,56 +26,6 @@ const Donate = new ethers.Contract(
 
 
 export default function Home() {
-    // Connecting Wallet
-    const [accounts, setAccounts] = useState([]);
-
-    async function connectAccounts() {
-        if (window.ethereum) {
-            const accounts = await window.ethereum.request({
-                method: "eth_requestAccounts"
-            });
-            setAccounts(accounts);
-        }
-    }
-
-    // getting whether user is authenticated
-    const [authenticated, setAuthenticated] = useState(true);
-
-    // checking for authentication
-    async function requestAccount() {
-        console.log('Requesting account...');
-
-        //Check if MetaMask is installed
-        if (window.ethereum) {
-            console.log('detected metamask');
-
-            try {
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                console.log(accounts);
-
-
-                setWalletAddress(accounts[0]);
-                getBalance();
-
-                if (accounts.length > 0) {
-                    setAuthenticated(true);
-                } else {
-                    setAuthenticated(false);
-                }
-
-                console.log('auth detected', authenticated)
-
-            } catch (error) {
-                console.error(error);
-            }
-
-        } else {
-            console.log('no metamask detected');
-        }
-    }
-
-
-
     // getting contract balance
     const [contractBalance, setContractBalance] = useState();
 
@@ -89,7 +35,7 @@ export default function Home() {
             const contractBalance = ethers.utils.formatEther(weiContractBalance, { commify: true });
             setContractBalance(contractBalance);
         } catch (error) {
-            var popup = alert("Switch to Goerli Testnet on Metamask and refresh!");
+            var popup = alert("You must first connect your MetaMask wallet, switch to the Goerli Testnet, and then refresh and try again!");
         }
     };
 
@@ -132,7 +78,7 @@ export default function Home() {
             await Donate.connect(provider.getSigner()).withdrawBalance(withdrawAddress, ethers.utils.parseUnits(withdrawAmount, "ether"));
             setUpdatedWithdraw(withdrawAmount);
         } catch (error) {
-            var popup = alert("Error: only the owner of this contract can withdraw funds!");
+            var popup = alert("Error: invalid input or insufficient rights (only the owner of this contract may call the withdraw function)!");
         }
     };
 
