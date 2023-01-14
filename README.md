@@ -1,12 +1,20 @@
-## dApp starter template
+# dApp starter template
 
 ----
+## Live website: 
+
+[eth-dapp-starter.vercel.app/](https://eth-dapp-starter.vercel.app/) (must have MetaMask installed and be connected to Goerli Testnet!)
+
+---
+
+
+## To deploy on your own machine:
 
 1. Clone github repo
 2. In a terminal, run 
 
 ```
-cd FranklinDAO_dApp_starter
+cd eth_dapp_starter
 yarn install 
 ```
 
@@ -24,18 +32,13 @@ PRIVATE_KEY=
 
 5. Save everything with ctrl+s 
 
-6. If you want to deploy the donate.sol contract to goerli, run:
+6. Start the project in developement mode:
 
 ```
-truffle migrate --network goerli
+yarn dev
 ```
 
-7. If you want to change the deployment network, follow the same template in truffle-config.js and replace the "goerli" in the terminal line above with the other network's name
+7: Open http://localhost:3000/ in your browser 
 
-
-8. To verify it on etherscan, select "multi-file solidity" and compiler 0.8.11. Keep everything else the same and when it prompts you to upload files, upload all files from your project folder: 
-
-
-9. To replace the contract address for the dApp, stick around for more documentation...
 
 ----
