@@ -3,7 +3,7 @@
 ----
 ## Live website: 
 
-eth-dapp-starter.vercel.app/ (must have MetaMask installed and be connected to Goerli Testnet!)
+[eth-dapp-starter.vercel.app/](https://eth-dapp-starter.vercel.app/) (must have MetaMask installed and be connected to Goerli Testnet!)
 
 ---
 
