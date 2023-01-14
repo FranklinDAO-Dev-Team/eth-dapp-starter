@@ -1,7 +1,11 @@
 # dApp starter template
 
 ----
-## Live website: eth-dapp-starter.vercel.app/ (must have MetaMask installed and be connected to Goerli Testnet!)
+## Live website: 
+
+eth-dapp-starter.vercel.app/ (must have MetaMask installed and be connected to Goerli Testnet!)
+
+---
 
 
 ## To deploy on your own machine:
