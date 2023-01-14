@@ -84,9 +84,13 @@ export default function Home() {
     const [contractBalance, setContractBalance] = useState();
 
     const getContractBalance = async () => {
-        const weiContractBalance = await Donate.getContractBalance.call();
-        const contractBalance = ethers.utils.formatEther(weiContractBalance, { commify: true });
-        setContractBalance(contractBalance);
+        try {
+            const weiContractBalance = await Donate.getContractBalance.call();
+            const contractBalance = ethers.utils.formatEther(weiContractBalance, { commify: true });
+            setContractBalance(contractBalance);
+        } catch (error) {
+            var popup = alert("Switch to Goerli Testnet on Metamask and refresh!");
+        }
     };
 
     // handle donate button
@@ -98,11 +102,23 @@ export default function Home() {
     };
 
     const handleClick = async () => {
-        await Donate.connect(provider.getSigner()).donate({ value: ethers.utils.parseUnits(donateAmount, "ether") });
-        setUpdated(donateAmount);
+        try {
+            await Donate.connect(provider.getSigner()).donate({ value: ethers.utils.parseUnits(donateAmount, "ether") });
+            setUpdated(donateAmount);
+        } catch (error) {
+            var popup = alert("Error: caused by either invalid input, insufficient balance, or wrong network!");
+        }
     };
 
-    // handle withdraw button
+
+    // handle the updating of the withdraw address variable
+    const [withdrawAddress, setWithdrawAddress] = useState('');
+
+    const handleChangeWithdrawAddress = (event) => {
+        setWithdrawAddress(event.target.value);
+    };
+
+    // handle updating withdraw amount variable
     const [withdrawAmount, setWithdrawAmount] = useState('');
     const [updatedWithdraw, setUpdatedWithdraw] = useState(withdrawAmount);
 
@@ -110,9 +126,14 @@ export default function Home() {
         setWithdrawAmount(event.target.value);
     };
 
+    // handle withdraw button
     const handleClickWithdraw = async () => {
-        await Donate.connect(provider.getSigner()).withdrawBalance('0x85257F5401071fB3EF665299d63A1e42a41b3769', ethers.utils.parseUnits(withdrawAmount, "ether"));
-        setUpdatedWithdraw(withdrawAmount);
+        try {
+            await Donate.connect(provider.getSigner()).withdrawBalance(withdrawAddress, ethers.utils.parseUnits(withdrawAmount, "ether"));
+            setUpdatedWithdraw(withdrawAmount);
+        } catch (error) {
+            var popup = alert("Error: caused by either invalid input, insufficient balance, or wrong network!");
+        }
     };
 
 
@@ -122,8 +143,8 @@ export default function Home() {
             <div className="pb-40 mx-auto max-w-screen-xl">
 
                 <div className="max-w-lg mx-auto text-center">
-                    <h2 className="pb-10 text-3xl font-extrabold sm:text-5xl text-white">
-                        dApp Demo {"\n"}
+                    <h2 className="pb-10 text-4xl font-extrabold text-white">
+                        Crowdfunding dApp Demo {"\n"}
                     </h2>
                 </div>
 
@@ -150,7 +171,7 @@ export default function Home() {
 
 
                     {/* donate input */}
-                    <a className="mr-4 p-2 text-sm font-medium text-white bg-zinc-600 hover:bg-zinc-700 rounded-md shadow">
+                    <a className="mr-4 p-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-md shadow">
                         <button onClick={handleClick}>Donate</button>
 
                     </a>
@@ -158,19 +179,28 @@ export default function Home() {
 
                     <input className="mr-4"
                         type="number" min="0"
-                        id="donate-button"
-                        name="donate-button"
+                        id="donate-input"
+                        name="donate-input"
                         onChange={handleChange}
                         value={donateAmount}
+                        placeholder=" amount in ETH"
                     />
 
 
                     {/* withdraw input */}
-                    <a className="mr-4 p-2 text-sm font-medium text-white bg-zinc-600 hover:bg-zinc-700 rounded-md shadow">
+                    <a className="mr-4 p-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md shadow">
                         <button onClick={handleClickWithdraw}>Withdraw</button>
 
                     </a>
 
+                    <input className='mr-4'
+                        type="text"
+                        id="withdraw-address-input"
+                        name="withdraw-address-input"
+                        onChange={handleChangeWithdrawAddress}
+                        value={withdrawAddress}
+                        placeholder=" address to withdraw to"
+                    />
 
                     <input
                         type="number" min="0"
@@ -178,6 +208,7 @@ export default function Home() {
                         name="withdraw-button"
                         onChange={handleChangeWithdraw}
                         value={withdrawAmount}
+                        placeholder=" amount in ETH"
                     />
 
                 </div>
