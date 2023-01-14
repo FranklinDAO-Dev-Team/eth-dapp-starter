@@ -119,7 +119,10 @@ export default function Home() {
 
                 <div className="m-6">
 
-
+                <h2 className="flex mb-4 text-sm font-medium text-yellow-500">
+                        For below buttons to work, switch to Goerli Testnet on Metamask
+                    </h2>
+                    
                     <h2 className="flex mb-4 text-sm font-medium text-white">
                         Contract: 0x2D53197C8Dfb493b64111BcA29286f613912a7BB (<a className="text-blue-600 underline hover:text-blue-700" href="https://goerli.etherscan.io/address/0x2D53197C8Dfb493b64111BcA29286f613912a7BB#code">See Goerli Etherscan</a>)
                     </h2>
