@@ -1,5 +1,7 @@
-# eth-dapp-starter
+# Quickstart
+
+Open up a new terminal and run:
 
 ```
-https://github.com/FranklinDAO-Development-Team/eth-dapp-starter.git
+git clone https://github.com/FranklinDAO-Development-Team/eth-dapp-starter.git
 ```
