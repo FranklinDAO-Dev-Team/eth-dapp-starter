@@ -7,7 +7,7 @@ dependencies:
 
 ```sh
 cd week1
-cd hardhat-boilerplate
+cd hardhat-boilerplate-master
 npm install
 ```
 
