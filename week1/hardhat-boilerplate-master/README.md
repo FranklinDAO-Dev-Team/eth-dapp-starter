@@ -39,7 +39,6 @@ need to have [Metamask](https://metamask.io) installed and listening to
 
 
 To run hardhat tests
-Finally, we can run the frontend with:
 
 ```sh
 npx hardhat test
