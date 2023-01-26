@@ -8,13 +8,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract PennFT is ERC721 {
-    // todo: think about what variables you need to store the NFT metadata
+    uint256 private _numTokens;
+    mapping(uint256 => string) private _tokenURIs;
 
     /**
         The constructor for the PennFT contract. Passes the name and symbol to the ERC721 constructor.
     */
     constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {
-        // todo: initialize any variables you created here
+        _numTokens = 0;
     }
 
     /**
@@ -25,7 +26,10 @@ contract PennFT is ERC721 {
     */
     function mintNFT(address recipient, string memory tokenURI) public returns (uint256)
     {
-        // todo: finish this code
+        _numTokens++;
+        _tokenURIs[_numTokens] = tokenURI;
+        _mint(recipient, _numTokens);
+        return _numTokens;
     }
 
     /**
@@ -34,7 +38,8 @@ contract PennFT is ERC721 {
     * @return string URI of the token
     */
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        // todo: finish this code
+        require(tokenId <= _numTokens, "token has not been minted");
+        return _tokenURIs[_numTokens];
     }
 
     /**
@@ -42,6 +47,6 @@ contract PennFT is ERC721 {
     * @return uint256 representing the number of tokens in existence
     */
     function tokenCount() public view returns (uint256) {
-        // todo: finish this code
+        return _numTokens;
     }
 }
