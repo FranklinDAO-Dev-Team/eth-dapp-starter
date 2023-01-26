@@ -1,5 +1,5 @@
-// We import Chai to use its asserting functions here.
 const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
 describe("PennCoin contract", function () {
   let totalSupply = "10000000000000000000000"; // 10000 * 1e18

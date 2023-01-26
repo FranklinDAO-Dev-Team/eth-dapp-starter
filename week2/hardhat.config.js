@@ -1,4 +1,3 @@
-require("@nomiclabs/hardhat-waffle");
 require("@nomicfoundation/hardhat-chai-matchers");
 
 module.exports = {
@@ -8,7 +7,9 @@ module.exports = {
       url: "http://127.0.0.1:8545",
     },
     hardhat: {
-      // See its defaults
+      accounts: {
+        count: 10,
+      },
     },
   },
 };
