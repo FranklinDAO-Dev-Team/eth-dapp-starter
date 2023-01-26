@@ -1,5 +1,6 @@
 const hre = require("hardhat");
 
+// Function deploys the PennFT contract
 async function main() {
   const PennFT = await hre.ethers.getContractFactory("PennFT");
   console.log("Deploying PennFT ERC721 token...");

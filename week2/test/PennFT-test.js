@@ -24,13 +24,19 @@ describe("PennFT contract", function () {
 
     it("Should mint a token with token ID 1 & 2 to account1", async function () {
       const address1 = account1.address;
-      await token721.mintTo(address1);
+      await token721.mintNFT(address1, "1");
       expect(await token721.ownerOf(1)).to.equal(address1);
 
-      await token721.mintTo(address1);
+      await token721.mintNFT(address1, "2");
       expect(await token721.ownerOf(2)).to.equal(address1);
 
       expect(await token721.balanceOf(address1)).to.equal(2);
+
+      expect(await token721.tokenURI(1)).to.equal("1");
+      expect(await token721.tokenURI(2)).to.equal("2");
+      expect(await token721.tokenCount()).to.equal(2);
     });
+
+    // todo: write more test cases
   });
 });
