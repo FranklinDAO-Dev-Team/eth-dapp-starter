@@ -1,86 +1,57 @@
-# dApp starter template
+# Week 2 Guide
 
-----
-## Live website: 
+This week, we'll be teaching you how to write a simple NFT smart contract. We'll host the images on IPFS using Pinata.
 
-[eth-dapp-starter.vercel.app/](https://eth-dapp-starter.vercel.app/) (must have MetaMask installed and be connected to Goerli Testnet!)
+## Quickstart
 
----
+We assume you already have nodejs, hardhat, etc. installed. If not, please follow the instructions from the previous
+week.
 
-
-## Premise: 
-
-The dApp is a simple implementation for the scenario that a charity decides to do a web3 token fundraising event. The smart contract connected with this dApp is a simple donate and withdraw contract which collects donations from any wallet addresses but only allows the owner of the contract to withdraw the funds (the address that deployed the contract) to ensure security of funds. 
-
-This boilerplate template is intended for beginner web3 developers who are learning ethers.js and solidity to easily implement their own ideas with ease. By gaining insight on what the fullstack behind a simple dApp looks like, others can hopefully recreate this with more interesting and complex implementations of their own.
-
-Full documentation and video tutorial TBA, but hopefully the comments in the code provide good context. Email me at zilecao.sas@upenn.edu for any questions!
-
----
-
-
-## How to Deploy on your own Machine
-
-1. Open visual studio code and select clone github repo and paste in the link from this repository
-2. In a terminal, run 
-
-```
-cd eth_dapp_starter
-yarn install 
+```shell
+npm install
+npx hardhat compile
+npx hardhat test
 ```
 
-3. create a new file in the root directory named ".env" and paste the following: 
+## Task 1: Writing the ERC-721 contract
 
-``
-GOERLI_RPC_URL=
-``
+`contracts/PennFT.sol` is an ERC-721 contract. Most of the methods are inherited from the base ERC-721 contract, but we
+want to add a few more methods to store the metadata so we can attach an image to our NFT.
 
-``
-PRIVATE_KEY=
-``
+Before editing the contract, run `npx hardhat test` to see the tests fail. You should then write some more tests before
+editing the contract to make sure you understand the interface.
 
-4. And input relevant info next to the equal signs (you can get RPC URL from infura.io and private key from MetaMask)
+Next, your task is to complete the contract, adding any variables, initializing them and finishing `mintNFT`, `tokenURI`
+and `tokenCount` methods.
 
-5. Save everything with ctrl+s and run the following command in your terminal:
+Note for minting the NFT, you can use the `_mint(address, id)` function in the ERC-721 base contract.
 
-```
-truffle migrate --network goerli
-```
+Once you are done finishing the methods, you should be able to run `npm hardhat test`, and the tests should pass.
 
-6. If you want to change the network, follow the same template in truffle-config.js and replace the "goerli" in the terminal line above with the other network's name
+## Task 2: Uploading NFT data
 
-7. Save everything with ctrl+s 
+1. Create an account on [Pinata](https://pinata.cloud/).
+2. Upload an image by clicking 'Upload'.
+   ![img.png](readme_images/img1.png)
+3. Upload `franklindao.jpg`, or another image of your choosing.
+4. Wait a few moments for the file to appear.
+   ![img.png](readme_images/img2.png)
+5. Copy the image IPFS URI into `nft-metadata.json`.
+6. Upload `nft-metadata.json` to Pinata.
+   ![img.png](readme_images/img3.png)
+7. Copy the metadata IPFS URI into `scripts/MintPennFT.js`.
 
+## Task 3: Deploying the contract
 
-8. The contract should be deployed soon. To find it, look for "contract address" under the truffle deployment in your terminal - copy the contract address and search for it on the goerli testnet etherscan: https://goerli.etherscan.io/
+1. Run `npx hardhat node`
+2. Run `npx hardhat run scripts/PennFT.js --network localhost`
+3. Copy the smart contract address into `scripts/MintPennFT.js`.
+4. Run `npx hardhat run scripts/MintPennFT.js --network localhost`
 
-9. To verify your contract on goerli etherscan, head to the "contract" tab to the right of the "ERC20 token txs" tab. Select verify your contract and choose "multi-file solidity" and compiler 0.8.11. Keep everything else the same and when it prompts you to upload files, upload these two from your project folder: 
+This should mint an NFT! Congrats, you've minted your first one!
 
-```
-Migrations.sol
-Donate.sol
-```
+## Task 4: Ethers.js
 
-10. After a successful verification, you can now interact with your smart contract on etherscan! However, if you want to be able to connect it with your app, there's just a little more to be done.
-
-11. Scroll down on the "contract" page to "contract abi," go ahead and copy this to your clipboard.
-
-12. Head back to your project files, and go to "components" --> contractABI.js. Proceed to paste and replace everything in the brackets (including the brackets)
-
-13. Then, head over to the "pages" folder --> index.js and replace the hardcoded contract address under "const Donate" with your new deployed contract.
-
-14. Save everything with ctrl+s 
-
-15. You can now start the project in developement mode by running the following in your terminal:
-
-```
-yarn dev
-```
-
-16: Open http://localhost:3000/ in your browser
-
-17. FINISH! You should now have a replication of the working app running on your local machine. The new smart contract that you deployed will register your account as its owner, so you are free to donate and withdraw any amount from the contract using your dApp. 
-
-Happy building! 
-
-----
+Your final task is to add more methods to the `scripts/MintPennFT.js` file to play around with the contract more. We've
+added some sample things you should do, but feel free to add additional methods and test other features of the ERC-721
+token.

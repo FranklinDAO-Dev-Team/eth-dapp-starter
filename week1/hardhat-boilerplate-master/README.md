@@ -22,7 +22,7 @@ Then, on a new terminal, to deploy your contract:
 ```sh
 cd week1
 cd hardhat-boilerplate
-npx hardhat run scripts/deploy.js --network localhost
+npx hardhat run scripts/PennCoin.js --network localhost
 ```
 
 Finally, we can run the frontend with:
