@@ -44,7 +44,7 @@ contract EnglishAuction {
         require(msg.sender == seller, "not seller");
         require(!started, "started");
         started = true;
-        endAt = uint32(block.timestamp + 60); // 60 seconds should be long enough for the Demo and test.
+        endAt = uint32(block.timestamp + 300); // 300 seconds should be long enough for the Demo and test.
         nft.transferFrom(seller, address(this), nftId);
         emit Start();
     }
@@ -54,6 +54,8 @@ contract EnglishAuction {
        coin.approve(address(this), _coinAmount);
        return true;
     }
+
+
     function AcceptPayment(uint256 _tokenamount) public returns(bool) {
        require(_tokenamount > GetAllowance(), "Please approve tokens before transferring");
        coin.transfer(address(this), _tokenamount);
@@ -69,8 +71,7 @@ contract EnglishAuction {
        return coin.balanceOf(address(this));
     }
 
-    
-    function bid(uint256 coinamount) external payable {
+    function bid(uint256 coinamount) external {
         require(started, "not started");
         require(block.timestamp < endAt, "ended");
         require(coinamount > highestBid, " value < highest bid");
