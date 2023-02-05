@@ -22,10 +22,9 @@ beforeEach(async function () {
 
 describe("Start the Auction", function () {    
 
-  it("", async function () {
-    await expect(
-      englishAuction.connect(buyer1).start()
-    ).to.be.reverted;
+  it("Starting the auction changes the started variable to true", async function () {
+    await englishAuction.connect(seller).start();
+    assert(englishAuction.started(), "Auction has started");
   });
     
   it("Only seller can start the auction", async function () {
