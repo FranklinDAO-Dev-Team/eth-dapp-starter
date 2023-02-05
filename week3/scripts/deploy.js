@@ -1,30 +1,33 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
 const hre = require("hardhat");
 
+
+
+
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
+    /* our contract addresses (mumbai) */
+    const PennCoin = "0xA233d98e2c53D6C7e57750A30B204a9bb916eEf3";
+    const PennFT =   "0x250F2B55bAD518506114A64f6C73A92934eeE4C0";
+    const PennFT_id = 1;
+    const startingBid = 1; 
+    
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  // We get the contract to deploy
+  const EnglishAuction = await hre.ethers.getContractFactory("EnglishAuction");
 
-  await lock.deployed();
+  /* TODO
+    add constuctor arguments to the deploy function:
+      The nft contract address
+  */
 
-  console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
-  );
+  // TODO update before deploy
+  // Deploy script to locahost is: npx hardhat run scripts/deploy.js --network localhost
+  const englishAuction = await EnglishAuction.deploy(PennFT, PennFT_id, PennCoin, startingBid); 
+
+  await englishAuction.deployed();
+  console.log("EnglishAuction deployed to:", englishAuction.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;

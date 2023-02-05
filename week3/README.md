@@ -21,6 +21,8 @@ import ERC721 from open zeppelin to replace IERC721 interface in source code
 ```
 
 
+Deploy script to locahost is: npx hardhat run scripts/deploy.js --network localhost
+
 
 FAQ:
 
