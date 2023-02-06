@@ -71,7 +71,8 @@ contract EnglishAuction {
        return coin.balanceOf(address(this));
     }
 
-    function bid(uint256 coinamount) external {
+    // TODO TODO TODO: bid currently takes in matic, need to not make it payable and instead bid PC@\2
+    function bid(uint256 coinamount) external payable {
         require(started, "not started");
         require(block.timestamp < endAt, "ended");
         require(coinamount > highestBid, " value < highest bid");
