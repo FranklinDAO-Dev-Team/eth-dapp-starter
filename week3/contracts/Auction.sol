@@ -71,7 +71,6 @@ contract EnglishAuction {
        return coin.balanceOf(address(this));
     }
 
-    // TODO TODO TODO: bid currently takes in matic, need to not make it payable and instead bid PC@\2
     function bid(uint256 coinamount) external payable {
         require(started, "not started");
         require(block.timestamp < endAt, "ended");
@@ -89,7 +88,7 @@ contract EnglishAuction {
         uint bal = bids[msg.sender];
         bids[msg.sender] = 0;
         coin.approve(address(this), bal);
-        coin.transfer(msg.sender, bal);
+        coin.transferFrom(address(this), msg.sender, bal);
         emit Withdraw(msg.sender, bal);
     }
 
@@ -100,7 +99,7 @@ contract EnglishAuction {
         ended = true;
         if (highestBidder != address(0)) {
             nft.transferFrom(address(this), highestBidder, nftId);
-            seller.transfer(highestBid);
+            coin.transferFrom(address(this), seller, highestBid);
         } else {
             nft.transferFrom(address(this), seller, nftId);
         }
