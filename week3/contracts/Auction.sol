@@ -37,7 +37,7 @@ contract EnglishAuction {
         nftId = _nftId; 
         coin = IERC20(_erc20);
         highestBid = _startingBid;
-        seller = payable(msg.sender); 
+        seller = payable(msg.sender);
     }
 
     function start() external {
@@ -57,8 +57,8 @@ contract EnglishAuction {
 
 
     function AcceptPayment(uint256 _tokenamount) public returns(bool) {
-       require(_tokenamount > GetAllowance(), "Please approve tokens before transferring");
-       coin.transfer(address(this), _tokenamount);
+       require(_tokenamount <= GetAllowance(), "Please approve tokens before transferring");
+       coin.transferFrom(msg.sender, address(this), _tokenamount);
        return true;
     }
     function GetUserTokenBalance() public view returns(uint256){ 
