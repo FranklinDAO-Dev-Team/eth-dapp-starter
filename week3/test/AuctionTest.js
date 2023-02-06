@@ -3,7 +3,7 @@ const {
   loadFixture,
 } = require("@nomicfoundation/hardhat-network-helpers");
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
-const { expect } = require("chai");
+const { expect, assert } = require("chai");
 
 beforeEach(async function () {
   [seller, buyer1, buyer2] = await ethers.getSigners();
@@ -16,6 +16,7 @@ beforeEach(async function () {
   const PennFT_id = 1;
   const EnglishAuction_Fact = await hre.ethers.getContractFactory("EnglishAuction");
   englishAuction = await EnglishAuction_Fact.deploy(PennFT.address, PennFT_id, PennCoin.address, 5);
+  PennFT.connect(seller).approve(englishAuction.address, PennFT_id);
 });
 
 
