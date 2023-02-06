@@ -49,48 +49,32 @@ describe("Test Bid()", function () {
     await englishAuction.connect(buyer1).bid(50);
     assert(await englishAuction.highestBid() == 50, "bid amount is correct");
     assert(await englishAuction.highestBidder() == buyer1.address, "highest bidder changed");
-    assert(await englishAuction.bids(buyer1.address) == 50, "bid data stored properly")
-    console.log(await englishAuction.bids(buyer1.address))
   });
 
 });
 
-// describe("Test Withdraw()", function () {    
-//   it("Basic Withdraw", async function () {
-//     await englishAuction.connect(seller).start();
-//     await PennCoin.connect(buyer1).approve(englishAuction.address, 50);
-//     console.log(await PennCoin.balanceOf(englishAuction.address))
-//     console.log(await PennCoin.balanceOf(buyer1.address))
-//     console.log(await englishAuction.bids(buyer1.address))
-//     console.log()
+describe("Test Withdraw()", function () {    
+  it("Basic Withdraw", async function () {
+    await englishAuction.connect(seller).start();
+    await PennCoin.connect(buyer1).approve(englishAuction.address, 50);
+    await englishAuction.connect(buyer1).bid(50);
+    await PennCoin.connect(buyer2).approve(englishAuction.address, 100);
+    await englishAuction.connect(buyer2).bid(100);
+    await englishAuction.connect(buyer1).withdraw();
+    assert(await englishAuction.bids(buyer1.address) == 0, "bid set to 0");
+    assert(await PennCoin.balanceOf(buyer1.address) == 100, "tokens returned");
+  });
+});
 
-//     await englishAuction.connect(buyer1).bid(50);
-//     console.log(await PennCoin.balanceOf(englishAuction.address))
-//     console.log(await PennCoin.balanceOf(buyer1.address))
-//     console.log(await englishAuction.bids(buyer1.address))
-//     console.log()
+describe("Test End()", function () {    
+  it("Basic End", async function () {
+    await englishAuction.connect(seller).start();
+    await PennCoin.connect(buyer1).approve(englishAuction.address, 50);
+    await englishAuction.connect(buyer1).bid(50);
+    await time.increase(600); // advance time by 10 minutes and mine a new block
+    console.log(await PennCoin.balanceOf(englishAuction.address))
 
-//     await englishAuction.connect(buyer1).withdraw();
-//     console.log(await PennCoin.balanceOf(englishAuction.address))
-//     console.log(await PennCoin.balanceOf(buyer1.address))
-//     console.log(await englishAuction.bids(buyer1.address))
-//     console.log()
-
-//     assert(await englishAuction.bids(buyer1.address) == 0, "bid set to 0");
-//     assert(await PennCoin.balanceOf(buyer1.address) == 100, "tokens returned");
-
-//   });
-// });
-
-// describe("Test End()", function () {    
-//   it("Basic End", async function () {
-//     await englishAuction.connect(seller).start();
-//     await PennCoin.connect(buyer1).approve(englishAuction.address, 50);
-//     await englishAuction.connect(buyer1).bid(50);
-//     await time.increase(600); // advance time by 10 minutes and mine a new block
-//     console.log(await PennCoin.balanceOf(englishAuction.address))
-
-    // await englishAuction.connect(buyer1).end();
-    // assert(await nft.ownerOf(PennFT_id) == buyer1.address, "nft was transfered to winner")
-//   });
-// });
+    await englishAuction.connect(buyer1).end();
+    assert(await nft.ownerOf(PennFT_id) == buyer1.address, "nft was transfered to winner")
+  });
+});
