@@ -4,13 +4,7 @@ This project demonstrates a basic Hardhat use case. It comes with a sample contr
 
 Try running some of the following tasks:
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+
 
 Step 1:
 
@@ -22,6 +16,12 @@ import ERC721 from open zeppelin to replace IERC721 interface in source code
 
 
 Deploy script to locahost is: npx hardhat run scripts/deploy.js --network localhost
+
+Step x: Testing
+run 'npm install hardhat'
+'npx hardhat test' to run tests
+
+
 
 
 FAQ:
