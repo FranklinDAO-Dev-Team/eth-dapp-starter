@@ -54,8 +54,6 @@ contract EnglishAuction {
        coin.approve(address(this), _coinAmount);
        return true;
     }
-
-
     function AcceptPayment(uint256 _tokenamount) public returns(bool) {
        require(_tokenamount <= GetAllowance(), "Please approve tokens before transferring");
        coin.transferFrom(msg.sender, address(this), _tokenamount);
@@ -74,7 +72,7 @@ contract EnglishAuction {
     function bid(uint256 coinamount) external payable {
         require(started, "not started");
         require(block.timestamp < endAt, "ended");
-        require(coinamount > highestBid, " value < highest bid");
+        require(coinamount > highestBid, "value < highest bid");
         AcceptPayment(coinamount);
         if (highestBidder != address(0)) {
             bids[highestBidder] += highestBid;
@@ -99,6 +97,7 @@ contract EnglishAuction {
         ended = true;
         if (highestBidder != address(0)) {
             nft.transferFrom(address(this), highestBidder, nftId);
+            coin.approve(address(this), highestBid);
             coin.transferFrom(address(this), seller, highestBid);
         } else {
             nft.transferFrom(address(this), seller, nftId);
