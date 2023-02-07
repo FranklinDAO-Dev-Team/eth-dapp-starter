@@ -16,6 +16,8 @@ run
 $npx hardhat test
 ```
 
+### Homework: Write 4 tests of your own
+
 ---
 
 # Step 3: Deploying
