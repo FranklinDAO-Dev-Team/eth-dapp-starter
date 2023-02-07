@@ -13,7 +13,7 @@ async function main() {
     
 
   // We get the contract to deploy
-  const EnglishAuctionWorking = await hre.ethers.getContractFactory("EnglishAuctionWorking");
+  const EnglishAuction = await hre.ethers.getContractFactory("EnglishAuction");
 
   /* TODO
     add constuctor arguments to the deploy function:
@@ -22,10 +22,10 @@ async function main() {
 
   // TODO update before deploy
   // Deploy script to localhost is: npx hardhat run scripts/deploy.js --network localhost
-  const englishAuctionWorking = await EnglishAuctionWorking.deploy(PennFT, PennFT_id, PennCoin, startingBid); 
+  const englishAuction = await EnglishAuction.deploy(PennFT, PennFT_id, PennCoin, startingBid); 
 
-  await englishAuctionWorking.deployed();
-  console.log("EnglishAuctionWorking deployed to:", englishAuctionWorking.address);
+  await englishAuction.deployed();
+  console.log("EnglishAuction deployed to:", englishAuction.address);
 }
 
 main().catch((error) => {
