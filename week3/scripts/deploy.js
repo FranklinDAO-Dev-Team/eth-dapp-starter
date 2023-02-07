@@ -6,8 +6,8 @@ const hre = require("hardhat");
 async function main() {
 
     /* our contract addresses (mumbai) */
-    const PennCoin = "0xA233d98e2c53D6C7e57750A30B204a9bb916eEf3";
-    const PennFT =   "0x250F2B55bAD518506114A64f6C73A92934eeE4C0";
+    const PennCoin = "0x19878cff44820F53C21968B81C378A2635064cEF";
+    const PennFT =   "0x2D53197C8Dfb493b64111BcA29286f613912a7BB";
     const PennFT_id = 1;
     const startingBid = 1; 
     
@@ -21,7 +21,7 @@ async function main() {
   */
 
   // TODO update before deploy
-  // Deploy script to locahost is: npx hardhat run scripts/deploy.js --network localhost
+  // Deploy script to localhost is: npx hardhat run scripts/deploy.js --network localhost
   const englishAuction = await EnglishAuction.deploy(PennFT, PennFT_id, PennCoin, startingBid); 
 
   await englishAuction.deployed();
