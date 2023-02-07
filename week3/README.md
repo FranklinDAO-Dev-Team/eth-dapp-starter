@@ -1,38 +1,16 @@
-# Sample Hardhat Project
+# Step 1: Smart Contract Work
+We provide a skeleton for the Auction.sol contract in the contracts folder. Follow the TODO statements to finish the contract
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+# Step 2: Unit Testing
+In the terminal, install hardhat with '''$npm install hardhat'''
+run '''$npx hardhat test'''
 
-Try running some of the following tasks:
+# Step 3: Deploying
+Track down contract addresses from last week in week2/scripts/MintPennFT.js. If you cannot find the addresses, you will have to redeploy PennCoin and PennFT.
 
-
-
-Step 1:
-
-```
-track down contract addresses from last week in week2/scripts/MintPennFT.js
-
-import ERC721 from open zeppelin to replace IERC721 interface in source code
-```
-
-
-Deploy script to locahost is: npx hardhat run scripts/deploy.js --network localhost
-
-Step x: Testing
-run 'npm install hardhat'
-'npx hardhat test' to run tests
-
-Step x+1: deploying
 Use this alchemy tutorial as a guide for deploying to testnet - https://docs.alchemy.com/docs/hello-world-smart-contract. Steps 1-5, 11-13, and step 16 will be relevant for you. Other steps are areas you already completed. 
 
-
-FAQ:
-
-```
+# FAQ
 If you get red squiggly lines under your import openzeppelin statements, 
-
-run 
-
-$ npm install @openzeppelin/contracts
-
-if the problem persists, just force close vscode and reopen it.
-```
+Run $ npm install @openzeppelin/contracts
+If the problem persists, just force close vscode and reopen it.
