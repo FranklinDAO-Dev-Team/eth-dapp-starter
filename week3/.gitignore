@@ -4,6 +4,8 @@ coverage
 coverage.json
 typechain
 typechain-types
+contracts/PennCoin.sol
+contracts/PennFT.sol
 
 # Hardhat files
 cache
