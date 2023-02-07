@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
-contract EnglishAuction {
+contract EnglishAuctionWorking {
     event Start();
     event Bid(address indexed sender, uint amount);
     event Withdraw(address indexed bidder, uint amount);
@@ -23,21 +23,30 @@ contract EnglishAuction {
     uint public highestBid;
     mapping(address => uint) public bids;
 
+
+    /* constructor TODO
+        Take in as inputs an address _nft, a uint _nftId, an address _erc20, and a uint _startingbid
+        Initialize variables nft, nftID, coin (the erc20), and highestBid to these respective values, and seller to msg.sender
+        Remember cast variables to the correct type: _nft as an IERC721, coin to IERC20, and seller as a payable address
+    */
+    // constructor() {
+
+    // }
     constructor(address _nft, uint _nftId, address _erc20, uint _startingBid) {
         nft = IERC721(_nft); 
-        nftId = _nftId;
+        nftId = _nftId; 
+        coin = IERC20(_erc20);
         highestBid = _startingBid;
-        // TODO: initialize the coin variable
-        // TODO: initialize the (payable) seller variable 
+        seller = payable(msg.sender);
     }
 
     function start() external {
-        //TODO: require that msg.sender is the seller
-        //TODO: require the auction hasn't started yet
-        //TODO: set started to true
+        require(msg.sender == seller, "not seller");
+        require(!started, "started");
+        started = true;
         endAt = uint32(block.timestamp + 300); // 300 seconds should be long enough for the Demo and test.
-        //TODO: transfer the nft from the seller to this contract
-        //TODO: emit the start event
+        nft.transferFrom(seller, address(this), nftId);
+        emit Start();
     }
 
     // Here we give you some functions to interact the PennCoin ERC20 contract 
@@ -61,27 +70,38 @@ contract EnglishAuction {
     }
 
     function bid(uint256 coinamount) external payable {
-        //TODO: require the auction has started and hasn't ended
-        //TODO: require the incoming bid is higher than the highest bid
-        //TODO: Use AcceptPayment() to transfer money from the bidder to the contract
-        //TODO: If there is alread a highest bidder, indicate they can now withdraw [highestBid] Penncoin using the bids map
-        //TODO: set the highestbid to the new coinamount
-        //TODO: set the highest bidder to msg.sender
-        //TODO: emit the bid event
+        require(started, "not started");
+        require(block.timestamp < endAt, "ended");
+        require(coinamount > highestBid, "value < highest bid");
+        AcceptPayment(coinamount);
+        if (highestBidder != address(0)) {
+            bids[highestBidder] += highestBid;
+        }
+        highestBid = coinamount;                                
+        highestBidder = msg.sender;
+        emit Bid(msg.sender, coinamount);
     }
 
-    function withdraw() external { 
-        //TODO: load the senders token balance from the bids map
-        //TODO: set the senders balance to 0
-        //TODO: approve and transfer [balance] Penncoin to the sender
-        //TODO: emit the Withdraw event
+    function withdraw() external {
+        uint bal = bids[msg.sender];
+        bids[msg.sender] = 0;
+        coin.approve(address(this), bal);
+        coin.transferFrom(address(this), msg.sender, bal);
+        emit Withdraw(msg.sender, bal);
     }
 
     function end() external {
-        //TODO: require that the action has started and not ended
-        //TODO: require that the block timestamp is greater than endAt
-        //TODO: set ended to true
-        //TODO: If no one made a bid, return the nft to the seller
-        //TODO: Otherwise, send the nft to the winner and transfer their bid to the seller
+        require(started, "not started");
+        require(!ended, "ended!");
+        require(block.timestamp >= endAt, "not ended");
+        ended = true;
+        if (highestBidder != address(0)) {
+            nft.transferFrom(address(this), highestBidder, nftId);
+            coin.approve(address(this), highestBid);
+            coin.transferFrom(address(this), seller, highestBid);
+        } else {
+            nft.transferFrom(address(this), seller, nftId);
+        }
+        emit End(highestBidder, highestBid);
     }
 }
