@@ -44,5 +44,8 @@ npx hardhat run scripts/deploy.js --network mumbai
 
 # FAQ
 If you get red squiggly lines under your import openzeppelin statements, 
-Run $ npm install @openzeppelin/contracts
+Run 
+```
+$ npm install @openzeppelin/contracts
+```
 If the problem persists, just force close vscode and reopen it.
