@@ -21,7 +21,8 @@ Step x: Testing
 run 'npm install hardhat'
 'npx hardhat test' to run tests
 
-
+Step x+1: deploying
+Use this alchemy tutorial as a guide for deploying to testnet - https://docs.alchemy.com/docs/hello-world-smart-contract. Steps 1-5, 11-13, and step 16 will be relevant for you. Other steps are areas you already completed. 
 
 
 FAQ:
