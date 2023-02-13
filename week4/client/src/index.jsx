@@ -18,6 +18,9 @@ root.render(
             h2: {
               fontSize: 48,
             },
+            h3: {
+              fontSize: 32,
+            },
           },
         },
       }}

@@ -1,15 +1,15 @@
-import {
-  Container,
-  createStyles,
-  Flex,
-  Grid,
-  Modal,
-  Title,
-} from "@mantine/core";
+import { Button, Container, createStyles, Flex, Title } from "@mantine/core";
 import { useState } from "react";
-import { mockTokenData } from "../utils/mockTokenData";
 import TokenCard from "../components/TokenCard";
-import TokenModal from "../components/TokenModal";
+import { ethers } from "ethers";
+import {
+  AUCTION_ADDRESS,
+  AUCTION_CONTRACT,
+  PENN_COIN_ADDRESS,
+  PENN_COIN_CONTRACT,
+  PENNFT_ADDRESS,
+  PENNFT_CONTRACT,
+} from "../utils/variables";
 
 const useStyles = createStyles({
   padding: {
@@ -20,37 +20,172 @@ const useStyles = createStyles({
 export default function Home() {
   const { classes } = useStyles(undefined, undefined);
 
-  const [tokens, setTokens] = useState(mockTokenData);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [numTokens, setNumTokens] = useState(0);
 
-  const [open, setOpen] = useState(false);
   const [openedToken, setOpenedToken] = useState(null);
+
+  const [coinContract, setCoinContract] = useState(null);
+  const [nftContract, setNftContract] = useState(null);
+  const [auctionContract, setAuctionContract] = useState(null);
+
+  const connectToMetamask = async () => {
+    if (window.ethereum) {
+      try {
+        await window.ethereum.enable();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const accounts = await provider.send("eth_requestAccounts", []);
+    setSelectedAddress(accounts[0]);
+    const signer = provider.getSigner();
+    console.log("Got signer.");
+
+    const coinContract = new ethers.Contract(
+      PENN_COIN_ADDRESS,
+      PENN_COIN_CONTRACT,
+      signer
+    );
+    setCoinContract(coinContract);
+    const nftContract = new ethers.Contract(
+      PENNFT_ADDRESS,
+      PENNFT_CONTRACT,
+      signer
+    );
+    setNftContract(nftContract);
+    const auctionContract = new ethers.Contract(
+      AUCTION_ADDRESS,
+      AUCTION_CONTRACT,
+      signer
+    );
+    setAuctionContract(auctionContract);
+    console.log("Got contracts.");
+
+    const tokens = await coinContract.functions.balanceOf(accounts[0]);
+    setNumTokens(tokens[0].toNumber());
+
+    const token = {
+      price: 0,
+      id: 1,
+      highestBidder: null,
+      status: "Ongoing",
+      metadata: null,
+    };
+
+    const started = await auctionContract.started();
+    if (!started) {
+      token.status = "Not Started";
+    } else {
+      token.highestBidder = await auctionContract.highestBidder();
+    }
+
+    const ended = await auctionContract.ended();
+    if (ended) {
+      token.status = "Ended";
+    }
+
+    token.price = (await auctionContract.highestBid()).toNumber();
+
+    const tokenURI = await nftContract.functions.tokenURI(1);
+    const req = new Request(
+      `https://ipfs.io/ipfs/${tokenURI[0].split("//")[1]}`,
+      {
+        method: "GET",
+        mode: "cors",
+      }
+    );
+    token.metadata = await (await fetch(req)).json();
+
+    token.owner = (await auctionContract.seller()).toLowerCase();
+    setOpenedToken(token);
+    console.log("Got token information.");
+    console.log(token);
+  };
+
+  const getTokenData = async () => {
+    await new Promise((r) => setTimeout(r, 5000));
+    const token = {
+      price: 0,
+      id: 1,
+      highestBidder: null,
+      status: "Ongoing",
+      metadata: null,
+    };
+
+    const started = await auctionContract.started();
+    if (!started) {
+      token.status = "Not Started";
+    } else {
+      token.highestBidder = await auctionContract.highestBidder();
+    }
+
+    const ended = await auctionContract.ended();
+    if (ended) {
+      token.status = "Ended";
+    }
+
+    token.price = (await auctionContract.highestBid()).toNumber();
+
+    const tokenURI = await nftContract.functions.tokenURI(1);
+    const req = new Request(
+      `https://ipfs.io/ipfs/${tokenURI[0].split("//")[1]}`,
+      {
+        method: "GET",
+        mode: "cors",
+      }
+    );
+    token.metadata = await (await fetch(req)).json();
+
+    token.owner = (await auctionContract.seller()).toLowerCase();
+    setOpenedToken(token);
+  };
+
+  const startAuction = async () => {
+    await nftContract.functions.approve(AUCTION_ADDRESS, 1);
+    await auctionContract.functions.start();
+    await getTokenData();
+  };
+
+  const submitBid = async (bid) => {
+    await coinContract.functions.approve(AUCTION_ADDRESS, bid);
+    await auctionContract.functions.bid(bid);
+    await getTokenData();
+  };
+
+  const endAuction = async () => {
+    await auctionContract.functions.end();
+    await getTokenData();
+  };
+
+  const withdraw = async () => {
+    await auctionContract.functions.withdraw();
+    await getTokenData();
+  };
 
   return (
     <Container size="xl" className={classes.padding}>
-      <Flex direction="column" justify="center" align="center">
-        <Title order={1}>NFT Auction Demo</Title>
-        <Grid>
-          {tokens.map((token) => (
-            <TokenCard
-              key={token.id}
-              token={token}
-              onClick={() => {
-                setOpenedToken(token);
-                setOpen(true);
-              }}
-            />
-          ))}
-        </Grid>
-      </Flex>
-      <Modal
-        opened={open}
-        onClose={() => setOpen(false)}
-        size="auto"
-        exitTransitionDuration={150}
-        withCloseButton={false}
-      >
-        <TokenModal token={openedToken} />
-      </Modal>
+      {selectedAddress ? (
+        <Flex direction="column" justify="center" align="center">
+          <Title order={1}>NFT Auction Demo</Title>
+          <Title order={3}>Welcome {selectedAddress}</Title>
+          <Title order={3}>You have {numTokens} PennCoin</Title>
+          <TokenCard
+            token={openedToken}
+            address={selectedAddress}
+            startAuction={startAuction}
+            submitBid={submitBid}
+            endAuction={endAuction}
+            withdraw={withdraw}
+          />
+        </Flex>
+      ) : (
+        <Flex direction="column" justify="center" align="center">
+          <Button onClick={connectToMetamask}>Connect to Metamask</Button>
+        </Flex>
+      )}
     </Container>
   );
 }
