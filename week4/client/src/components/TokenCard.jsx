@@ -77,31 +77,13 @@ export default function TokenCard({
               ""
             )
           ) : token.status === "Ongoing" ? (
-            <Flex direction="column" gap="sm">
-              <NumberInput
-                placeholder="Your bid"
-                size="xl"
-                min={token.price}
-                step={0.0005}
-                precision={4}
-                value={bid}
-                onChange={(value) => setBid(value)}
-              />
-              <Button size="xl" onClick={() => submitBid(bid)}>
-                Submit bid
-              </Button>
-              {token.owner === address ? (
-                <Button size="xl" onClick={endAuction}>
-                  End Auction
-                </Button>
-              ) : (
-                ""
-              )}
-            </Flex>
+            {
+              /* TODO: Allow the user to input some amount of PennCoin to bid */
+            }
           ) : (
-            <Button size="xl" onClick={withdraw}>
-              Withdraw Bid
-            </Button>
+            {
+              /* TODO: Allow the user to withdraw their bids */
+            }
           )}
         </Flex>
       </Flex>

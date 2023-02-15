@@ -143,6 +143,7 @@ export default function Home() {
     setOpenedToken(token);
   };
 
+  // This function allows the owner to start the auction
   const startAuction = async () => {
     await nftContract.functions.approve(AUCTION_ADDRESS, 1);
     await auctionContract.functions.start();
@@ -150,19 +151,15 @@ export default function Home() {
   };
 
   const submitBid = async (bid) => {
-    await coinContract.functions.approve(AUCTION_ADDRESS, bid);
-    await auctionContract.functions.bid(bid);
-    await getTokenData();
+    // TODO: alter this to submit the user's bid to the contract
   };
 
   const endAuction = async () => {
-    await auctionContract.functions.end();
-    await getTokenData();
+    // TODO: alter this to end the auction
   };
 
   const withdraw = async () => {
-    await auctionContract.functions.withdraw();
-    await getTokenData();
+    // TODO: alter this to withdraw the user's winnings
   };
 
   return (
