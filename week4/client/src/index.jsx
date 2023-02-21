@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import Home from "./pages/Home";
 import { MantineProvider } from "@mantine/core";
+import ReactPractice from "./pages/ReactPractice";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -25,6 +26,7 @@ root.render(
         },
       }}
     >
+      {/* <ReactPractice /> */}
       <Home />
     </MantineProvider>
   </React.StrictMode>
